@@ -342,7 +342,7 @@ class TemplateInjector:
         js = self.get_pinbopo_converter_js(reading_conversion)
         if CHINESE_PARSER_HEADER in text:
             return text.replace(CHINESE_PARSER_HEADER, js + "\n\n" + CHINESE_PARSER_HEADER)
-        return newline_reduce(text) + "\n\n" + js
+        return newline_reduce(text + "\n\n" + js)
 
     def _remove_pinbopo_converter(self, text: str) -> str:
         return _remove_block(text, PINBOPO_CONVERTER_HEADER, PINBOPO_CONVERTER_FOOTER)
