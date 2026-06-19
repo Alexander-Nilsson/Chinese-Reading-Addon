@@ -255,7 +255,7 @@ class TestHookRegistration:
 
     @pytest.mark.parametrize("anki_session", [_ANKI_SESSION_PARAMS], indirect=True)
     def test_editor_buttons_registered(self, anki_session: AnkiSession) -> None:
-        """setupEditorButtons hook adds F9/F10 buttons with correct commands."""
+        """setupEditorButtons hook adds toggle button with correct commands."""
         anki_session.load_addon(ADDON_NAME)
         with anki_session.profile_loaded():
             from unittest.mock import MagicMock
@@ -266,14 +266,13 @@ class TestHookRegistration:
 
             buttons = runFilter("setupEditorButtons", [], editor)
 
-            assert len(buttons) == 2, f"Expected 2 editor buttons, got {len(buttons)}"
-            assert editor._links.get("addCReadings") is not None, "addCReadings link missing"
-            assert editor._links.get("removeFormatting") is not None, "removeFormatting link missing"
-            assert editor._addButton.call_count == 2
+            assert len(buttons) == 1, f"Expected 1 editor button, got {len(buttons)}"
+            assert editor._links.get("toggleCReadings") is not None, "toggleCReadings link missing"
+            assert editor._addButton.call_count == 1
 
     @pytest.mark.parametrize("anki_session", [_ANKI_SESSION_PARAMS], indirect=True)
     def test_editor_shortcuts_registered(self, anki_session: AnkiSession) -> None:
-        """editor_did_init_shortcuts adds F9 and F10 shortcuts."""
+        """editor_did_init_shortcuts adds F9 shortcut."""
         anki_session.load_addon(ADDON_NAME)
         with anki_session.profile_loaded():
             from aqt import gui_hooks
@@ -286,7 +285,6 @@ class TestHookRegistration:
 
             keys = [c[0] for c in cuts]
             assert "F9" in keys, f"F9 shortcut not registered. Keys: {keys}"
-            assert "F10" in keys, f"F10 shortcut not registered. Keys: {keys}"
 
     @pytest.mark.parametrize("anki_session", [_ANKI_SESSION_PARAMS], indirect=True)
     def test_bridge_cmd_wrapped(self, anki_session: AnkiSession) -> None:

@@ -205,17 +205,10 @@ def setupButtons(righttopbtns, editor):
     _log.debug("setupButtons called, checkProfile=%s", checkProfile())
     if not checkProfile():
         return righttopbtns
-    editor._links["removeFormatting"] = lambda editor: mw.ChineseReading.cleanField(editor)  # type: ignore[attr-defined]  # ty:ignore[unresolved-attribute]
-    if config.traditional_icons:
-        duPath = os.path.join(addonPath, "icons", "tradDu.svg")
-        shanPath = os.path.join(addonPath, "icons", "tradShan.svg")
-    else:
-        duPath = os.path.join(addonPath, "icons", "simpDu.svg")
-        shanPath = os.path.join(addonPath, "icons", "simpShan.svg")
-
-    righttopbtns.insert(0, editor._addButton(icon=shanPath, cmd="removeFormatting", tip="Hotkey: F10", id="删"))
-    editor._links["addCReadings"] = lambda editor: mw.ChineseReading.addCReadings(editor)  # type: ignore[attr-defined]  # ty:ignore[unresolved-attribute]
-    righttopbtns.insert(0, editor._addButton(icon=duPath, cmd="addCReadings", tip="Hotkey: F9", id="读"))
+    editor._links["toggleCReadings"] = lambda editor: mw.ChineseReading.toggleCReadings(editor)  # type: ignore[attr-defined]  # ty:ignore[unresolved-attribute]
+    righttopbtns.insert(
+        0, editor._addButton(icon=None, cmd="toggleCReadings", label="读[du2]", tip="Hotkey: F9", id="读")
+    )
     _log.debug("setupButtons completed, editor._links keys: %s", list(editor._links.keys()))
     return righttopbtns
 
@@ -226,8 +219,7 @@ def setupShortcuts(cuts, editor):
     _log.debug("setupShortcuts called, checkProfile=%s", checkProfile())
     if not checkProfile():
         return
-    cuts.append(("F10", lambda: mw.ChineseReading.cleanField(editor)))  # type: ignore[attr-defined]  # ty:ignore[unresolved-attribute]
-    cuts.append(("F9", lambda: mw.ChineseReading.addCReadings(editor)))  # type: ignore[attr-defined]  # ty:ignore[unresolved-attribute]
+    cuts.append(("F9", lambda: mw.ChineseReading.toggleCReadings(editor)))  # type: ignore[attr-defined]  # ty:ignore[unresolved-attribute]
     _log.debug("setupShortcuts completed, shortcuts count: %d", len(cuts))
 
 

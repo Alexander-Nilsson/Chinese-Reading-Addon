@@ -135,7 +135,7 @@ class ReadingGenerator:
                     if rType == "jyutping":
                         result = self._db.getJyutping(word)
                     else:
-                        result = self._db.getAltFayin(word)
+                        result = self._db.getAltFayin(word) or self._db.getFayin(word)
                     if not result:
                         count -= 1
                         word = word[:-1]

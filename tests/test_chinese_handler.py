@@ -219,15 +219,15 @@ class TestStripBrackets:
 
 class TestAddCReadingsNoTextSelected:
     def test_no_main_import_error_when_no_text_selected(self, ChineseHandler, test_db):
-        """addCReadings should not fail with ModuleNotFoundError when no text selected."""
+        """toggleCReadings should not fail with ModuleNotFoundError when no text selected."""
         handler = _make_handler(ChineseHandler, db=test_db)
 
         mock_editor = MagicMock()
         mock_editor.web.selectedText.return_value = ""
 
         try:
-            handler.addCReadings(mock_editor)
+            handler.toggleCReadings(mock_editor)
         except ModuleNotFoundError as e:
             if "main" in str(e):
-                pytest.fail(f"addCReadings raised ModuleNotFoundError for 'main': {e}")
+                pytest.fail(f"toggleCReadings raised ModuleNotFoundError for 'main': {e}")
             raise

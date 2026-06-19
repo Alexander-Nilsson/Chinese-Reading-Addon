@@ -144,8 +144,8 @@ class ChineseHandler:
 
         return None, None
 
-    def cleanField(self, editor):
-        _log.debug("cleanField called, editor=%s", editor)
+    def toggleCReadings(self, editor):
+        _log.debug("toggleCReadings called, editor=%s", editor)
         note = editor.note
         if not note:
             aqt.utils.showInfo("Chinese Reading: No note loaded")
@@ -153,39 +153,22 @@ class ChineseHandler:
 
         field_name, _source = self._resolve_field_name(note)
         if field_name is None:
-            _log.warning("cleanField: no field could be resolved")
+            _log.warning("toggleCReadings: no field could be resolved")
             aqt.utils.showInfo("Chinese Reading: Please click inside a field and try again.")
             return
 
         text = note[field_name]
         cleaned_text = self.removeBrackets(text)
-        if text != cleaned_text:
-            _log.debug("cleanField: using field %s", field_name)
+        if cleaned_text != text:
+            _log.debug("toggleCReadings: removing existing readings from field %s", field_name)
             note[field_name] = cleaned_text
             self.anki.col.update_note(note)
             editor.loadNoteKeepingFocus()
         else:
-            _log.debug("cleanField: no brackets found in field %s", field_name)
-
-    def addCReadings(self, editor):
-        _log.debug("addCReadings called, editor=%s", editor)
-        note = editor.note
-        if not note:
-            aqt.utils.showInfo("Chinese Reading: No note loaded")
-            return
-
-        field_name, _source = self._resolve_field_name(note)
-        if field_name is None:
-            _log.warning("addCReadings: no field could be resolved")
-            aqt.utils.showInfo("Chinese Reading: Please click inside a field and try again.")
-            return
-
-        text = note[field_name]
-        cleaned_text = self.removeBrackets(text)
-        _log.debug("addCReadings: using field %s", field_name)
-        self.finalizeReadings(cleaned_text, field_name, note, editor)
-        self.anki.col.update_note(note)
-        editor.loadNoteKeepingFocus()
+            _log.debug("toggleCReadings: generating readings for field %s", field_name)
+            self.finalizeReadings(cleaned_text, field_name, note, editor)
+            self.anki.col.update_note(note)
+            editor.loadNoteKeepingFocus()
 
     def finalizeReadings(self, text, field, note, editor=False, rType=False):
         _log.debug(

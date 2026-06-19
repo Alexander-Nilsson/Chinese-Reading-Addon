@@ -68,20 +68,19 @@ def test_idempotent_reading_generation(anki_session: AnkiSession) -> None:
         mock_editor.note = note
         mock_editor.web.selectedText.return_value = ""  # No selection, use field resolution
 
-        # 2. First generation
-        handler.addCReadings(mock_editor)
+        # 2. First toggle generates readings
+        handler.toggleCReadings(mock_editor)
 
         first_result = note["Expression"]
         assert "你好" in first_result
         assert "[ni3 hao3]" in first_result
 
-        # 3. Second generation (should be identical, no duplication)
-        handler.addCReadings(mock_editor)
+        # 3. Second toggle removes readings
+        handler.toggleCReadings(mock_editor)
 
         second_result = note["Expression"]
-        assert second_result == first_result
-        # Ensure we don't have [nǐ hǎo][nǐ hǎo]
-        assert second_result.count("[ni3 hao3]") == 1
+        assert second_result == "你好"
+        assert "[" not in second_result
 
 
 @pytest.mark.parametrize("anki_session", [_ANKI_SESSION_PARAMS], indirect=True)
@@ -104,8 +103,8 @@ def test_remove_reading_button(anki_session: AnkiSession) -> None:
         mock_editor.note = note
         mock_editor.web.selectedText.return_value = ""
 
-        # 2. Trigger removal
-        handler.cleanField(mock_editor)
+        # 2. Toggle removes existing readings
+        handler.toggleCReadings(mock_editor)
 
         # 3. Verify it was stripped
         assert note["Expression"] == "你好"
