@@ -206,8 +206,12 @@ def setupButtons(righttopbtns, editor):
     if not checkProfile():
         return righttopbtns
     editor._links["toggleCReadings"] = lambda editor: mw.ChineseReading.toggleCReadings(editor)  # type: ignore[attr-defined]  # ty:ignore[unresolved-attribute]
+    shortcut_hint = f" ({config.toggle_reading_shortcut})" if config.toggle_reading_shortcut else ""
     righttopbtns.insert(
-        0, editor._addButton(icon=None, cmd="toggleCReadings", label="读[du2]", tip="Hotkey: F9", id="读")
+        0,
+        editor._addButton(
+            icon=None, cmd="toggleCReadings", label="读[du2]", tip=f"Generate Chinese Reading{shortcut_hint}", id="读"
+        ),
     )
     _log.debug("setupButtons completed, editor._links keys: %s", list(editor._links.keys()))
     return righttopbtns
@@ -219,7 +223,12 @@ def setupShortcuts(cuts, editor):
     _log.debug("setupShortcuts called, checkProfile=%s", checkProfile())
     if not checkProfile():
         return
-    cuts.append(("F9", lambda: mw.ChineseReading.toggleCReadings(editor)))  # type: ignore[attr-defined]  # ty:ignore[unresolved-attribute]
+    shortcut = config.toggle_reading_shortcut
+    if shortcut:
+        cuts.append((shortcut, lambda: mw.ChineseReading.toggleCReadings(editor)))  # type: ignore[attr-defined]  # ty:ignore[unresolved-attribute]
+        _log.debug("setupShortcuts: registered shortcut=%s", shortcut)
+    else:
+        _log.debug("setupShortcuts: no shortcut configured, skipping")
     _log.debug("setupShortcuts completed, shortcuts count: %d", len(cuts))
 
 

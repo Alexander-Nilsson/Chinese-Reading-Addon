@@ -90,6 +90,10 @@ class AddonConfig:
         return self._raw.get("UseFileReferences", False)
 
     @property
+    def toggle_reading_shortcut(self) -> str:
+        return self._raw.get("ToggleReadingShortcut", "")
+
+    @property
     def active_fields(self) -> list[str]:
         return self._raw.get("ActiveFields", [])
 

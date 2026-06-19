@@ -20,5 +20,6 @@
   ],
   "MandarinTones12345": ["#E60000", "#E68A00", "#00802B", "#005CE6", "gray"],
   "ActiveFields": [],
-  "displayAgain": true
+  "displayAgain": true,
+  "ToggleReadingShortcut": ""
 }

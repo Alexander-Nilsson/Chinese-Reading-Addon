@@ -90,6 +90,7 @@ _KEY_MAP: dict[str, str] = {
     "cantonese_tones": "CantoneseTones123456",
     "mandarin_tones": "MandarinTones12345",
     "use_file_references": "UseFileReferences",
+    "toggle_reading_shortcut": "ToggleReadingShortcut",
     "active_fields": "ActiveFields",
 }
 
@@ -108,6 +109,7 @@ class ConfigDelta:
     traditional_icons: bool | None = None
     font_size: int | None = None
     use_file_references: bool | None = None
+    toggle_reading_shortcut: str | None = None
     cantonese_tones: tuple[str, ...] | None = None
     mandarin_tones: tuple[str, ...] | None = None
     active_fields: tuple[str, ...] | None = None

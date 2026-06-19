@@ -18,6 +18,7 @@ from PyQt6.QtWidgets import (
     QGroupBox,
     QHBoxLayout,
     QHeaderView,
+    QKeySequenceEdit,
     QLabel,
     QLineEdit,
     QPushButton,
@@ -174,6 +175,7 @@ class SettingsGui(QWidget):
         self.loadUseFileRefs()
         self.initActiveFieldsCB()
         self.loadAutoCSSJS()
+        self.loadToggleReadingShortcut()
         self.loadActiveFields()
         self.hotkeyEsc = QShortcut(QKeySequence("Esc"), self)
         self.hotkeyEsc.activated.connect(self.hide)
@@ -205,6 +207,13 @@ class SettingsGui(QWidget):
 
     def loadAutoCSSJS(self):
         self.autoCSSJS.setChecked(self.config.auto_css_js_generation)
+
+    def loadToggleReadingShortcut(self):
+        shortcut = self.config.toggle_reading_shortcut
+        if shortcut:
+            from PyQt6.QtGui import QKeySequence
+
+            self.toggleReadingShortcut.setKeySequence(QKeySequence(shortcut))
 
     def loadTradIcons(self):
         self.tradIcons.setChecked(self.config.traditional_icons)
@@ -337,6 +346,10 @@ class SettingsGui(QWidget):
         self.fontSize = QSpinBox()
         self.fontSize.setMinimum(1)
         self.fontSize.setMaximum(200)
+
+        self.toggleReadingShortcut = QKeySequenceEdit()
+        self.toggleReadingShortcut.setClearButtonEnabled(True)
+        self.toggleReadingShortcut.setMaximumWidth(200)
 
         optionsTab = QWidget(self)
         optionsTab.setLayout(self.getOptionsLayout())
@@ -529,6 +542,12 @@ class SettingsGui(QWidget):
         bgbh2.addWidget(self.useFileRefs)
         bgbh2.addStretch()
         bgbv.addLayout(bgbh2)
+        bgbh3 = QHBoxLayout()
+        bgbh3.setSpacing(_M)
+        bgbh3.addWidget(QLabel("Toggle Reading Shortcut:"))
+        bgbh3.addWidget(self.toggleReadingShortcut)
+        bgbh3.addStretch()
+        bgbv.addLayout(bgbh3)
         bgb.setLayout(bgbv)
         ol.addWidget(bgb)
         return ol
@@ -733,6 +752,10 @@ class SettingsGui(QWidget):
         self.autoCSSJS.setToolTip(
             "Enable or disable automatic CSS and JavaScript handling.\n"
             "Disabling this option is not recommended if you are not familiar with these technologies."
+        )
+        self.toggleReadingShortcut.setToolTip(
+            "Keyboard shortcut to toggle reading generation in the editor. "
+            "Leave empty to disable the shortcut. Click the field and press your desired key combination."
         )
         self.profileAF.setToolTip("Profile: Select the profile.")
         self.noteTypeAF.setToolTip("Note Type: Select the note type.")
@@ -1308,6 +1331,7 @@ class SettingsGui(QWidget):
         hc = self.hanziConversion.currentText()
         rc = self.readingConversion.currentText()
         fontSize = self.fontSize.value()
+        shortcut = self.toggleReadingShortcut.keySequence().toString()
         afs = tuple(self.saveActiveFields())
 
         delta = ConfigDelta(
@@ -1323,6 +1347,7 @@ class SettingsGui(QWidget):
             traditional_icons=tradIcons,
             font_size=fontSize,
             use_file_references=True,
+            toggle_reading_shortcut=shortcut,
             cantonese_tones=cColors,
             mandarin_tones=mColors,
             active_fields=afs,
